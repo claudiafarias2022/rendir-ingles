@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nazareth Bookstore — Final Project</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; font-family:'Poppins',sans-serif; background:#0e0e16; color:#f4f4f8; overflow:hidden; }
+
+  .slide {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    padding:50px 70px 90px; text-align:center;
+    opacity:0; visibility:hidden; transform:translateX(50px);
+    transition:all .5s ease;
+    background:
+      radial-gradient(1000px 550px at 75% -5%, #2a2050 0%, transparent 55%),
+      radial-gradient(800px 450px at 8% 108%, #12324a 0%, transparent 50%),
+      #0e0e16;
+  }
+  .slide.active { opacity:1; visibility:visible; transform:translateX(0); z-index:2; }
+
+  h1 { font-size:54px; font-weight:800; line-height:1.1; }
+  h2 { font-size:48px; font-weight:800; margin-bottom:30px; }
+  .accent { color:#9d8cff; }
+
+  .visual { display:flex; gap:24px; justify-content:center; align-items:stretch; flex-wrap:wrap; margin:8px 0 26px; }
+  .pic {
+    width:225px; padding:24px 16px; border-radius:22px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  }
+  .pic .emoji { font-size:70px; line-height:1.1; filter:drop-shadow(0 10px 24px rgba(157,140,255,.25)); }
+  .pic .label { font-size:17px; font-weight:700; color:#fff; }
+  .pic .mini { font-size:14px; color:#b9b9ce; font-weight:300; line-height:1.4; }
+  .pic.hl { border-color:#9d8cff77; background:rgba(157,140,255,.12); box-shadow:0 0 40px rgba(157,140,255,.15); }
+
+  .vs { display:flex; align-items:center; font-size:40px; font-weight:800; color:#9d8cff; }
+
+  /* concept statement: short, big, punchy — not a paragraph */
+  .concept {
+    font-size:26px; font-weight:300; color:#e6e6f2; max-width:920px; line-height:1.5;
+  }
+  .concept b { color:#9d8cff; font-weight:700; }
+
+  .chips { display:flex; gap:13px; flex-wrap:wrap; justify-content:center; margin-top:22px; }
+  .chip {
+    font-size:17px; font-weight:600; color:#fff;
+    background:rgba(157,140,255,.14); border:1px solid #9d8cff55;
+    padding:9px 20px; border-radius:999px;
+  }
+
+  .team { display:flex; gap:24px; margin-top:32px; }
+  .person {
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+    border-radius:14px; padding:13px 26px; font-size:16px;
+  }
+  .person span { display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#9d8cff; margin-top:4px; }
+
+  .flow { display:flex; align-items:center; gap:20px; flex-wrap:wrap; justify-content:center; margin:6px 0 24px; }
+  .flownode {
+    padding:18px 26px; border-radius:18px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+  }
+  .flownode .ic { font-size:52px; }
+  .flownode .lb { font-size:14px; font-weight:600; color:#d9d9e8; margin-top:6px; }
+  .arrow { font-size:32px; color:#9d8cff; font-weight:800; }
+
+  .imgbox {
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.04); border:1px dashed rgba(255,255,255,.25);
+    border-radius:18px; padding:18px;
+  }
+  .imgbox img { max-width:100%; max-height:300px; border-radius:12px; }
+  .imgcap { font-size:12px; color:#8a8aa2; margin-top:8px; }
+
+  .nav { position:fixed; bottom:26px; left:0; right:0; z-index:10; display:flex; justify-content:center; align-items:center; gap:20px; }
+  .nav button { background:rgba(255,255,255,.07); color:#fff; border:1px solid rgba(255,255,255,.18); border-radius:10px; padding:9px 20px; font-size:14px; cursor:pointer; font-family:inherit; }
+  .nav button:hover { background:#9d8cff33; }
+  .counter { font-size:13px; color:#8a8aa2; letter-spacing:2px; }
+  .progress { position:fixed; top:0; left:0; height:4px; background:linear-gradient(90deg,#9d8cff,#5ea8ff); width:0%; transition:width .4s; z-index:10; }
+  .hint { position:fixed; bottom:30px; right:28px; font-size:11px; color:#5e5e75; }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- 1 · TITLE -->
+<section class="slide active">
+  <div class="visual">
+    <div class="pic hl" style="width:280px;">
+      <img src="logo.png" alt="Librería Útiles logo" style="width:170px; border-radius:20px; background:#fff; padding:10px;">
+      <div class="label">Nazareth School Supplies</div><div class="mini">real client</div>
+    </div>
+    <div class="pic"><div class="emoji">📱</div><div class="label">Mobile App</div><div class="mini">Android · Java</div></div>
+  </div>
+  <h1>Stock &amp; Sales <span class="accent">Management</span></h1>
+  <div class="concept"><b>Final project</b> — Higher Technician in Web &amp; Mobile App Development</div>
+  <div class="team">
+    <div class="person">Claudia Farías<span>Presenter</span></div>
+    <div class="person">Anabella Medrano<span>Presenter</span></div>
+  </div>
+</section>
+
+<!-- 2 · THE NEED -->
+<section class="slide">
+  <h2>The <span class="accent">Need</span></h2>
+  <div class="visual">
+    <div class="pic"><div class="emoji">🖥️</div><div class="label">SPA</div><div class="mini">only on the store PC</div></div>
+    <div class="vs">→</div>
+    <div class="pic"><div class="emoji">🙁⏳</div><div class="label">Slow service</div><div class="mini">data not updated</div></div>
+    <div class="vs">→</div>
+    <div class="pic hl"><div class="emoji">✅</div><div class="label">Our solution</div><div class="mini">anywhere · any time</div></div>
+  </div>
+  <div class="concept">The store needed <b>stock</b> and <b>sales</b> up to date, everywhere.</div>
+</section>
+
+<!-- 3 · OBJECTIVE -->
+<section class="slide">
+  <h2><span class="accent">Objective</span></h2>
+  <div class="visual">
+    <div class="pic"><div class="emoji">📦</div><div class="label">Products</div><div class="mini">manage</div></div>
+    <div class="pic"><div class="emoji">🏷️</div><div class="label">Stock</div><div class="mini">control</div></div>
+    <div class="pic"><div class="emoji">🛒</div><div class="label">Sales</div><div class="mini">register</div></div>
+  </div>
+  <div class="concept">One app: <b>simple</b>, <b>fast</b>, <b>synchronized</b> 🔍</div>
+</section>
+
+<!-- 4 · WORK PROCESS -->
+<section class="slide">
+  <h2>How did we <span class="accent">work?</span></h2>
+  <div class="visual">
+    <div class="pic"><div class="emoji">🗣️</div><div class="label">Needs</div><div class="mini">analysis</div></div>
+    <div class="pic"><div class="emoji">🎨</div><div class="label">Design</div></div>
+    <div class="pic"><div class="emoji">⌨️</div><div class="label">Programming</div></div>
+    <div class="pic"><div class="emoji">🧪</div><div class="label">Testing</div></div>
+  </div>
+  <div class="concept">A real process, step by step — <b>until delivery</b>.</div>
+</section>
+
+<!-- 5 · TECHNOLOGY -->
+<section class="slide">
+  <h2>How does it <span class="accent">work?</span></h2>
+  <div class="flow">
+    <div class="flownode"><div class="ic">📱</div><div class="lb">App · Java</div></div>
+    <div class="arrow">⇄</div>
+    <div class="flownode"><div class="ic">🔌</div><div class="lb">REST API</div></div>
+    <div class="arrow">⇄</div>
+    <div class="flownode"><div class="ic">🖥️</div><div class="lb">Django</div></div>
+    <div class="arrow">⇄</div>
+    <div class="flownode"><div class="ic">🗄️</div><div class="lb">Database</div></div>
+  </div>
+  <div class="concept"><b>Synchronized in real time</b> — GitHub for teamwork</div>
+</section>
+
+<!-- 6 · FINAL PRODUCT -->
+<section class="slide">
+  <h2>The <span class="accent">App</span></h2>
+  <div class="visual">
+    <div class="pic"><div class="emoji">👨‍💼👩‍💼</div><div class="label">Roles</div><div class="mini">admin · seller</div></div>
+    <div class="pic"><div class="emoji">📦</div><div class="label">Products</div><div class="mini">add · edit · delete</div></div>
+    <div class="pic"><div class="emoji">📊</div><div class="label">Stock</div><div class="mini">real time</div></div>
+    <div class="pic"><div class="emoji">🛒</div><div class="label">Sales</div><div class="mini">few taps</div></div>
+  </div>
+  <div class="concept"><b>Login with roles</b> · products · stock · <b>sales in a few taps</b></div>
+</section>
+
+<!-- 7 · LEARNING -->
+<section class="slide">
+  <h2>We <span class="accent">learned</span></h2>
+  <div class="visual">
+    <div class="pic"><div class="emoji">💻</div><div class="label">Programming</div><div class="mini">design · databases</div></div>
+    <div class="pic"><div class="emoji">🔐</div><div class="label">Cybersecurity</div><div class="mini">login · roles</div></div>
+    <div class="pic"><div class="emoji">🧪</div><div class="label">Testing</div><div class="mini">before delivery</div></div>
+  </div>
+  <div class="concept"><b>Everything applied</b> in a real project.</div>
+</section>
+
+<!-- 8 · CONCLUSION -->
+<section class="slide">
+  <h2>Now, <span class="accent">Nazareth + App</span></h2>
+  <div class="visual">
+    <div class="pic hl"><div class="emoji">📚</div><div class="label">Bookstore</div><div class="mini"><img src="logo.png" alt="logo" style="width:64px; border-radius:12px; background:#fff; margin-top:6px;"></div></div>
+    <div class="pic"><div class="emoji">😊</div><div class="label">Happy client</div><div class="mini">fluid · intuitive</div></div>
+  </div>
+  <h1 class="accent" style="font-size:42px;">Thank you!</h1>
+  <div class="concept">Do you have <b>any questions?</b></div>
+</section>
+
+<div class="nav">
+  <button onclick="move(-1)">◀</button>
+  <div class="counter" id="counter">1 / 8</div>
+  <button onclick="move(1)">▶</button>
+</div>
+<div class="hint">← → keys · click sides</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let c = 0;
+  function show(n) {
+    slides[c].classList.remove('active');
+    c = Math.max(0, Math.min(n, slides.length - 1));
+    slides[c].classList.add('active');
+    document.getElementById('counter').textContent = (c+1) + ' / ' + slides.length;
+    document.getElementById('progress').style.width = ((c+1)/slides.length*100) + '%';
+  }
+  function move(d) { show(c + d); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') move(1);
+    if (e.key === 'ArrowLeft') move(-1);
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('.nav')) return;
+    if (e.clientX > innerWidth * .7) move(1);
+    else if (e.clientX < innerWidth * .3) move(-1);
+  });
+  show(0);
+</script>
+
+</body>
+</html>
